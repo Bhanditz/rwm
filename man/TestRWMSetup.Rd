@@ -17,6 +17,10 @@ Uses built-in R functions `exists()` and `file.exists()`.
 Returns TRUE or FALSE according if all 4 tests are passed or not.
 }
 
+\references{ 
+McLeod, A.I. (2008). R Workspace Management: With R Package.
+}
+
 \author{A.I. McLeod }
 
 \note{ This function is used by most of the other functions to validate

@@ -37,6 +37,10 @@ R assignment or by the function InitializeRWM().
 The global variable `.WSID` is set to the current working directory.
 }
 
+\references{ 
+McLeod, A.I. (2008). R Workspace Management: With R Package.
+}
+
 \author{A.I. McLeod }
 
 \note{

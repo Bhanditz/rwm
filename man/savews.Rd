@@ -36,6 +36,10 @@ R assignment or by the function `IntializeRWM()`.
 }
 
 
+\references{ 
+McLeod, A.I. (2008). R Workspace Management: With R Package.
+}
+
 \author{A.I. McLeod }
 
 \note{ `savews()` is a useful shortcut. It saves the current workspace

@@ -51,6 +51,10 @@ your `.First` function.
 The global variable `.UserDirectory` and  `.UserDate` are defined.
 }
 
+\references{ 
+McLeod, A.I. (2008). R Workspace Management: With R Package.
+}
+
 \author{ A.I. McLeod }
 
 \note{

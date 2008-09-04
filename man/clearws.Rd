@@ -26,6 +26,10 @@ as the hidden variables `.WSID`, `.UserDate` and `.UserDirectory`.
 None
 }
 
+\references{ 
+McLeod, A.I. (2008). R Workspace Management: With R Package.
+}
+
 \author{A.I. McLeod }
 
 \section{Warning}{

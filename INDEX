@@ -2,6 +2,7 @@ MAIN FUNCTIONS
 loadws		load workspace
 savews		save workspace
 clearws		clear workspace
+continuews	save workspace and quit R
 
 
 UTILITY FUNCTIONS
