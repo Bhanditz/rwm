@@ -9,7 +9,7 @@ function (name="", d = as.character(.UserDate), silentQ = FALSE,
     #test if name is not a character string, eg: myws instead of "myws"
     ans <- try(is.character(name),  silent=TRUE) 
     if (!(is.logical(ans) && ans))
-        stop("First argument must be a character string") 
+        stop("Argument, 'name', must be a character string!") 
     `%<>%` <- function(x,y) base::paste(x,y,sep="")   
     UD <- if (name=="")
         .UserDirectory %<>% "/" %<>% d
@@ -38,9 +38,9 @@ function (name="", d = as.character(.UserDate), silentQ = FALSE,
     if (name!=""){
         if (clearQ) {
             rm(list=ls(envir = .GlobalEnv), envir = .GlobalEnv)
-            if (exists(".LastSaved", where=1)) 
+            if (exists(".LastSaved", where=1, inherits=FALSE)) 
                 rm(".LastSaved", envir = .GlobalEnv)
-            if (exists(".Describe", where=1)) 
+            if (exists(".Describe", where=1, inherits=FALSE)) 
                 rm(".Describe", envir = .GlobalEnv)
         }
         base::load(".Rdata", .GlobalEnv)
@@ -56,8 +56,45 @@ function (name="", d = as.character(.UserDate), silentQ = FALSE,
         }
         if (!silentQ && exists(".LastSaved", where=1))
             cat("last saved: " %<>% .LastSaved, fill = TRUE)
-        if (!silentQ && exists(".Describe", where=1))
-            cat(.Describe, fill = TRUE)                
+        if (!silentQ && exists(".Describe", where=1)) {
+            cat(".Describe = ")
+            cat(.Describe, fill = TRUE)
+            }
+#It is unlikely that objects 'loadws', 'savews', 'clearws' or 'continuews' exist
+#  in the workspace being loaded but if they do, it's a catastrophe, so I feel
+#  the following checks are needed. 
+        if (exists("loadws", where=1, inherits=FALSE)){
+            cat("'loadws' exists in current workspace.", fill=TRUE)
+            ans<-readline("remove 'loadws' from current workspace (recommended): y/n ")
+            if (substr(ans, 1, 1) == "n")
+                stop("error - `loadws` exists in current workspace!\nRemove this conflict to use `rwm`!")
+            else
+                rm("loadws", pos=1)
+            } 
+        if (exists("savews", where=1, inherits=FALSE)){
+            cat("'savews' exists in current workspace.", fill=TRUE)
+            ans<-readline("remove 'savews' from current workspace (recommended): y/n ")
+            if (substr(ans, 1, 1) == "n")
+                stop("error - `savews` exists in current workspace!\nRemove this conflict to use `rwm`!")
+            else
+                rm("savews", pos=1)
+            }
+        if (exists("clearws", where=1, inherits=FALSE)){
+            cat("'clearws' exists in current workspace.", fill=TRUE)
+            ans<-readline("remove 'clearws' from current workspace (recommended): y/n ")
+            if (substr(ans, 1, 1) == "n")
+                stop("error - `clearws` exists in current workspace!\nRemove this conflict to use `rwm`!")
+            else
+                rm("clearws", pos=1)
+            }
+        if (exists("continuews", where=1, inherits=FALSE)){
+            cat("'continuews' exists in current workspace.", fill=TRUE)
+            ans<-readline("remove 'continuews' from current workspace (recommended): y/n ")
+            if (substr(ans, 1, 1) == "n")
+                stop("error - `continuews` exists in current workspace!\nRemove this conflict to use `rwm`!")
+            else
+                rm("continuews", pos=1)
+            }                     
     }
 }
 

@@ -18,9 +18,11 @@ clearws(silentQ=FALSE)
 
 \details{
 Using this function is similar to quitting R and starting 
-R again with a fresh workspace.
+R again with a fresh workspace except that the
+R command history is kept.
 All non-hidden R objects are deleted as well
-as the hidden variables `.WSID`, `.UserDate` and `.UserDirectory`.
+as the hidden variables `.WSID`, `.LastSaved` and `.Describe`
+if they exist in the current workspace.
 }
 \value{
 None

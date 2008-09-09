@@ -12,8 +12,8 @@ Utility Functions for Managing R Workspaces
 	\tabular{ll}{
 	Package: \tab rwm\cr
 	Type: \tab Package\cr
-	Version: \tab 1.25\cr
-	Date: \tab 2008-09-04\cr
+	Version: \tab 1.27\cr
+	Date: \tab 2008-09-09\cr
 	License: \tab GLP >= 2\cr
 	}
 
@@ -44,6 +44,9 @@ These functions, where were
 loosely inspired by APL commands: )LOAD, )SAVE, )CONTINUE, and )CLEARWS
 are useful for managing R workspaces.
 See Anscombe (1981, p.103) or Grenander (1982, p.151-152).
+This package uses hidden global variables in the user's workspace:
+.UserDirectory, .UserDate,
+.WSID, .LastSaved and .Describe.
 
 }
 

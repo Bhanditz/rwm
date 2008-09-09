@@ -4,7 +4,7 @@ function (name = .WSID, d = as.character(.UserDate), silentQ = FALSE,
 {
     if(!TestRWMSetup()) 
        stop("`.UserDirectory` and/or `.UserDate` not set correctly. See help(rwm).")
-    if (!exists(".WSID", where=1) && !is.character(name)) 
+    if (!exists(".WSID", where=1, inherits=FALSE) && !is.character(name)) 
         stop("`.WSID` not defined!")
     `%<>%` <- function(x,y) paste(x,y,sep="")  
 #test if .UserDirectory<>d is valid
@@ -27,10 +27,10 @@ function (name = .WSID, d = as.character(.UserDate), silentQ = FALSE,
     is.same.name <- function(x, y) is.logical(all.equal(x, y)) && 
         all.equal(x, y)
 #case: name=.WSID
-    if (exists(".WSID", where=1) && is.same.name(name, .WSID)) 
+    if (exists(".WSID", where=1, inherits=FALSE) && is.same.name(name, .WSID)) 
         SaveName <- name
 #case: if .WSID exists and `name` specifies same workspace
-    else if (exists(".WSID", where=1)) {
+    else if (exists(".WSID", where=1, inherits=FALSE)) {
         SaveName <- if (d=="")
             .UserDirectory %<>% "/" %<>% name
         else

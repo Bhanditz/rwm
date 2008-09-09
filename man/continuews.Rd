@@ -14,7 +14,7 @@ continuews(silentQ = TRUE)
 }
 
 \details{
-Simply  'savews` and `q`.
+Simply doesw  'savews` and `q`.
 An error is given if `.WSID` is not defined.
 }
 \value{

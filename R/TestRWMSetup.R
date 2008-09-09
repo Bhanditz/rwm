@@ -1,6 +1,6 @@
 `TestRWMSetup` <-
 function() {
-    if (exists(".UserDirectory", where=1) && file.exists(.UserDirectory) && exists(".UserDate", where=1)) 
+    if (exists(".UserDirectory", where=1, inherits=FALSE) && file.exists(.UserDirectory) && exists(".UserDate", where=1, inherits=FALSE)) 
         if (.UserDate=="")
                 TRUE
         else

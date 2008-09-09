@@ -29,7 +29,7 @@ R assignment or by the function InitializeRWM().
   by .UserDirectory<>d  }
   \item{d}{ subdirectory of .UserDirectory, usually year  }
   \item{silentQ}{ TRUE, no message }
-  \item{historyQ}{ TRUE, save R history }
+  \item{historyQ}{ TRUE, load R history }
   \item{clearQ}{ TRUE, clear all R objects before loading the workspace }
 }
 
@@ -50,6 +50,13 @@ If the workspace contains a character vector `.Describe`, this is also
 displayed when the workspace is loaded. 
 `.Describe` may contain a brief description of the purpose of the workspace and/or major
 functions/datasets in the workspace.
+}
+
+\section{Warning}{
+In the unlikely event that the workspace being loaded already happens to contain
+one of the objects 'loadws', 'savews', 'clearws' or 'continuews', you will
+be prompted to remove it. 
+An error is generated if you don't remove it.
 }
 
 \seealso{ 

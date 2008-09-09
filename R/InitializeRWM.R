@@ -8,7 +8,7 @@ function(){
     ans
     }
 #setting `.UserDirectory`
-if (!exists(".UserDirectory", where=1)) {
+if (!exists(".UserDirectory", where=1, inherits=FALSE)) {
     cat("The overall directory is where all your R projects will be saved.\nEach R project may be comprised of further subdirectories.\nThese directories and subdirectories may contain\nworkspaces, R source files and other types of data as well.\nFor example, on windows, I use d:/r/")
     ans <- readline("\nEnter the overall directory for your R projects:\n")
 # possible minor editorial adjustments
@@ -29,7 +29,7 @@ if (!exists(".UserDirectory", where=1)) {
     cat("`.UserDirectory` set to: " %<>% ans, fill=TRUE)
 }
 ##
-if (!exists(".UserDate", where=1)) {
+if (!exists(".UserDate", where=1, inherits=FALSE)) {
     cat(paste("Within ",.UserDirectory,", projects may be organized by year or other grouping",sep=""),fill=TRUE)
     cat("Set the variable `.UserDate` to current year or other value", fill=TRUE)
     cat("For example .UserDate<-2008 or .UserDate<-\"current\" or .UserDate<-\"A\" ", fill=TRUE)
