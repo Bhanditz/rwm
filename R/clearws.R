@@ -1,7 +1,7 @@
-`clearws` <-
+clearws <-
 function (silentQ = FALSE) 
 {
-    if (!TestRWMSetup()) 
+    if (!testrwm()) 
         stop("`.UserDirectory` or `.UserDate` not defined. See help(rwm).")
     setwd(.UserDirectory)
     rm(list = ls(envir = .GlobalEnv), envir = .GlobalEnv)
@@ -11,6 +11,8 @@ function (silentQ = FALSE)
         rm(".LastSaved", envir = .GlobalEnv)
     if (exists(".Describe", where=1, inherits=FALSE)) 
         rm(".Describe", envir = .GlobalEnv)
+    if (exists(".Prefix", where=1, inherits=FALSE)) 
+        rm(".Prefix", envir = .GlobalEnv)
     if (!silentQ) {
         cat("Workspace cleared.", fill = TRUE)
         cat(paste("Working directory:", .UserDirectory), fill = TRUE)

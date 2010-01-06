@@ -1,0 +1,271 @@
+\documentclass[article,nojss]{jss}
+\usepackage{amsmath}
+\def\command#1{{\it #1}}
+\newfont{\tit}{cmss10 scaled\magstep1}
+\def\ti#1{{\tit #1}}
+
+
+\author{A. I. McLeod\\University of Western Ontario }
+\Plainauthor{A. I. McLeod}
+
+\title{Notes on \pkg{rwm}}
+\Plaintitle{Notes on rwm}
+
+\Keywords{APL Commands, decision support systems, ephemeral computing, workspace, teaching}
+\Plainkeywords{APL Commands, decision support systems, ephemeral computing, workspace, teaching}
+
+\Abstract{
+The \pkg{rwm} package implements the most important workspace management functions that
+are available in APL.
+This is especially useful in ephemeral computing projects such as arise in decision support,
+teaching and homework assignments.
+In these situations, it is often important to do some computations to obtain a result
+such as, for example, the best lowest cost alternative or the solution of a homework problem.
+In these cases using workspaces may be simplier and more expedient than working with
+R libraries.
+}
+
+\Address{
+  A.I. McLeod\\
+  University of Western Ontario\\
+  E-mail: \email{aimcleod@uwo.ca}
+}
+  
+
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE}
+%\VignetteIndexEntry{Notes on rwm}
+%\VignetteKeywords{PL Commands, decision support systems, ephemeral computing, workspace, teaching}
+%\VignettePackage{rwm}
+
+
+<<preliminaries,echo=FALSE,results=hide>>=
+online <- FALSE ## if set to FALSE the local copy of MSFT.rda
+                ## is used instead of get.hist.quote()
+options(prompt = "R> ")
+@
+
+\section[Introduction]{Introduction and Purpose} 
+\label{sec:intro}
+
+I used \proglang{APL} extensively at one time and occassionally stilll do.
+I found the \proglang{APL}
+commands, \command{)LOAD}, \command{)SAVE}, \command{)LIB}, \command{)LOAD}
+and \command{)WSID}, very convenient and useful for managing \proglang{APL}
+workspaces and libraries.
+The purpose of these commands is briefly described in the table below:
+
+\vspace{0.1in}
+\begin{tabular}{ll}
+\ti{APL COMMAND}\qquad    & \ti{BRIEF DESCRIPTION} \cr
+\code{)LOAD}         & load a previously saved workspace \cr
+\code{)SAVE} \code{EG}         & save workspace and change its WSID to ``EG'' \cr
+\code{)SAVE}         & save workspace using its WSID-name \cr
+\code{)LIB}          & make objects in a previously save workspace accessible \cr
+\code{)CONTINUE}         & save workspace and quit \cr
+\code{)CLEAR}         & clear workspace and change its WSID to ``CLEARWS'' \cr
+\code{)WSID \code{EG}}         & set WSID to ``EG'' \cr
+\code{)WSID}         & display the WSID \cr
+\end{tabular}
+\vspace{0.1in}
+
+Since switching first to \proglang{S} in 1990 and later on to \proglang{S-Plus} and now to \proglang{R},
+I have continued to use an implementation of these APL-like commands.
+More than ever this seems a natural and effective way to work with \proglang{R}.
+
+The functions provided in \pkg{rwm} may be used in interactive or batch mode with
+\proglang{R} and across all operating systems.
+In these way \proglang{R} scripts,  accessing a variety of user created workspaces,
+may be easily be made portable across all these environments.
+As discussed in \cite{McLeodRJournal},
+workspaces may provide an expedient and reliable alternative to packages
+in ephemeral computing situations such in teaching and decision support.
+
+\proglang{R} also shares with \proglang{APL} the idea of vectorizing
+the computations.
+In a separate vignette \citep{McLeodAPL}, included with this package, I discuss 
+some of the common functions for vector thinking in
+\proglang{APL}, \proglang{Mathematica} and \proglang{R}.
+Please note that this is a digression and not directly relevant to the
+\pkg{rwm} package.
+
+\section[Setup]{Setup} 
+\label{sec:setup}
+
+The {\it installation directory} is where \proglang{R} and its component directories:
+\code{bin}, \code{library}, etc. are located.
+The location of this directory is often referred to as \code{R_HOME} and this
+location is typically stored by the \proglang{OS} in an environmental variable.
+When \proglang{R} is running the location \code{R_HOME} may be obtained
+using the function \code{R.home}:
+
+\begin{Schunk}
+\begin{Sinput}
+R.home()
+\end{Sinput}
+\end{Schunk}
+
+When R is started using the executable program located in the \code{bin} subdirectory
+of \code{R_HOME}, the default initial working directory (IWD) is used.
+The location of this default IWD may be determined using the \proglang{R}
+function \code{getwd}.
+
+\vspace{0.1in}
+\begin{tabular}{ll}
+\ti{OS}            & \ti{Default IWD} \cr
+Windows Vista       &C:$\backslash$Users$\backslash$Ian$\backslash$R    \cr
+Mac OS X            &/users/aim/R                                       \cr
+linux               &/users/faculty/aim/R                               \cr
+\end{tabular}
+\vspace{0.1in}
+
+When the \proglang{R} workspace is saved using the function \code{save.image},
+a workspace file with extension \code{.Rdata} is created in the current working directory,
+
+\begin{Schunk}
+\begin{Sinput}
+save.image()
+\end{Sinput}
+\end{Schunk}
+
+
+By default, this extension is the filename as well which means that 
+most OSs the resulting file is {\it hidden}.
+But a full name could also be specicifed as in:
+
+\begin{Schunk}
+\begin{Sinput}
+save.image("MyWS.Rdata")
+\end{Sinput}
+\end{Schunk}
+
+When using the GUI interface to \proglang{R}, another way of starting 
+\proglang{R} is simply to  click on the workspace.
+
+For more details about starting \proglang{R}, see 
+\citet[Appendix B]{RIntro}.
+
+\subsection[Suggested Setup]{Suggested Setup}
+\label{sec:generic}
+
+\begin{Schunk}
+\begin{Sinput}
+.UserDirectory <- "d:/r/2009"
+.UserDate <- "2009"
+dir.create(paste(.UserDirectory, .UserDate, sep="/"))
+save.image()
+\end{Sinput}
+\end{Schunk}
+
+
+\subsection[Generic Setup]{Generic Setup}
+\label{sec:generic}
+
+For some purposes we need a directory assignment that is completely
+machine and OS independent.
+The following initializes the setup variables for \pkg{rwm} and
+then saves the workspace.
+If you are using a OS/GUI such as with Windows or Mac, 
+you could simply drag the saved workspace to the desktop and then
+start \proglang{R} by clicking on the icon for the workspace.
+
+\begin{Schunk}
+\begin{Sinput}
+R> .UserDirectory <- tempdir()
+R> .UserDate <- "2009"
+R> dir.create(paste(.UserDirectory, .UserDate, sep = "/"))
+R> library(rwm)
+\end{Sinput}
+\begin{Soutput}
+Current directory: C:/Users/Ian/AppData/Local/Temp\Rtmp2oCWjh
+\end{Soutput}
+\begin{Sinput}
+R> save.image("GenericExample")
+\end{Sinput}
+\end{Schunk}
+
+\section[Workspace Functions]{Workspace Functions} 
+\label{sec:WSFNS}
+
+\vspace{0.1in}
+\begin{tabular}{ll}
+\ti{FUNCTION}    & \ti{BRIEF DESCRIPTION} \cr
+loadws      & load a previously saved workspace \cr
+attachws    & attach a previously saved workspace \cr
+savews      & save workspace                       \cr
+cws         & save workspace and quit or clear \cr
+clearws     & clear workspace and return to home \cr
+\end{tabular}
+\vspace{0.1in}
+
+These functions all have counterparts in the \proglang{APL}.
+The function \code{loadws} is similar to the \proglang{APL}
+command \command{)LOAD}.
+If the optionally argument \code{pos} is set to an integer
+bigger than 2, \code{loadws} attaches the workspace in that
+position in the search path and in this case its behavior
+is similar to the \proglang{APL} command \command{)LIB}.
+
+The functions \code{savews}, \code{cws} and \code{clearws}
+are reminisent of the \proglang{APL} commands
+\command{)SAVE}, \command{CONTINUE} and \command{)CLEAR}.
+For more about these \proglang{APL} commands see
+\citet{Grenander82, Helzer1989}
+or any of the other books on the \proglang{APL} programming
+language.
+
+
+The \proglang{APL} command  \command{)DROPWS} is not implemented.
+In \pkg{rwm}, each workspace is usually saved in a separate directory.
+There is a possibility of confusion over whether the whole directory
+should be deleted or just the specified workspace.
+it is safer for the user to delete unneeded workspaces and/or directories
+manually using the methods available in the \proglang{OS}.
+
+\section[Working With Multiple IWDs]{Working With Multiple IWDs} 
+\label{sec:MultipleDirectories}
+
+Sometimes when working with \proglang{Mathematica} or \LaTeX, I
+find it convenient to save \proglang{R} workspaces along with
+these project files.
+This could be done by using the base \proglang{R} function
+\command{save.image} but it is easy to make an error in the
+pathname.
+So I find it convenient to use the function \command{SelectUserDirectory}
+to set up a different initial workspace.
+Of course, the user will likely need to modify the locations to suit
+their needs.
+
+\begin{Schunk}
+\begin{Sinput}
+`SelectUserDirectory` <-
+function(){
+	cat("Select from the following:", fill=T)
+	cat("1. d:/r", fill=T)
+	cat("2. d:/math", fill=T)
+	cat("3. e:/tex", fill=T)
+	cat("4. R home", fill=T)
+	ans <- as.numeric(readline("Enter your choice 1-4: \n"))
+	if (! (ans %in% 1:4)) ans<-4 #default, always valid
+	.UserDirectory <<- switch(ans, "d:/r", "d:/math", "e:/tex", R.home())
+	setwd(.UserDirectory)
+	cat(paste("Current directory:", .UserDirectory), fill = TRUE)
+}
+\end{Sinput}
+\end{Schunk}
+
+\section[Using Workspaces like Packages]{Using Workspaces like Packages} 
+\label{sec:UsingWorkspacesPackages}
+
+\section[Clearing the Workspace]{Clearing the Workspace} 
+\label{sec:ClearingWorkspace}
+
+
+
+
+\bibliography{rwmV}
+
+\end{document}
+
+

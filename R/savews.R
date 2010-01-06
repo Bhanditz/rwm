@@ -1,11 +1,19 @@
-`savews` <-
+savews <-
 function (name = .WSID, d = as.character(.UserDate), silentQ = FALSE, 
-    historyQ = TRUE) 
+    historyQ = TRUE, q = FALSE, prefix=.Prefix) 
 {
-    if(!TestRWMSetup()) 
+    if(!testrwm()) 
        stop("`.UserDirectory` and/or `.UserDate` not set correctly. See help(rwm).")
     if (!exists(".WSID", where=1, inherits=FALSE) && !is.character(name)) 
-        stop("`.WSID` not defined!")
+        stop("`.WSID` not defined!\nArgument name must be character string if used.\nOtherwise if argument `name` is not used, `.WSID` must be a valid pathanme with read/write privledges.")
+    if (missing(prefix)&&!exists(".Prefix", where=1, inherits=FALSE) ) 
+        Prefix<-""
+    else
+        Prefix<-prefix
+    #test if 'prefix' is not a character string, eg: myws instead of "myws"
+    ans <- base::try(is.character(Prefix),  silent=TRUE) 
+    if (!(is.logical(ans) && ans))
+        base::stop("Argument, 'prefix', must be a character string!")
     `%<>%` <- function(x,y) paste(x,y,sep="")  
 #test if .UserDirectory<>d is valid
     FullUserDirectory <- if (d=="")
@@ -13,8 +21,6 @@ function (name = .WSID, d = as.character(.UserDate), silentQ = FALSE,
     else
        .UserDirectory %<>% "/" %<>% d
     if (!file.exists(FullUserDirectory)) {
-        cat(FullUserDirectory %<>% " does not exist, attempting to create it ...", 
-            fill = TRUE)
         dir.create(FullUserDirectory, recursive=TRUE)
         if (file.exists(FullUserDirectory))
         cat(FullUserDirectory %<>% " created!", fill = TRUE)
@@ -28,46 +34,56 @@ function (name = .WSID, d = as.character(.UserDate), silentQ = FALSE,
         all.equal(x, y)
 #case: name=.WSID
     if (exists(".WSID", where=1, inherits=FALSE) && is.same.name(name, .WSID)) 
-        SaveName <- name
+        WSPathName <- name
 #case: if .WSID exists and `name` specifies same workspace
     else if (exists(".WSID", where=1, inherits=FALSE)) {
-        SaveName <- if (d=="")
+        WSPathName <- if (d=="")
             .UserDirectory %<>% "/" %<>% name
         else
             .UserDirectory %<>% "/" %<>% d %<>% "/" %<>% name
 #workspace name has changed, check if directory exists
-        if (!file.exists(SaveName)) {
-            cat(SaveName %<>% " does not exist, attempting to create it...", fill = TRUE)
-            dir.create(SaveName, recursive=TRUE)
-            if (file.exists(SaveName)) cat(SaveName  %<>%  " created!", fill = TRUE)
-            else stop(paste("error creating", SaveName))
+        if (!file.exists(WSPathName)) {
+            dir.create(WSPathName, recursive=TRUE)
+            if (file.exists(WSPathName)) cat(WSPathName  %<>%  " created!", fill = TRUE)
+            else stop(paste("error creating", WSPathName))
         }         
     }
     else {#.WSID does not exist
-        SaveName<-paste(.UserDirectory, d, name, sep="/")
-         if (!file.exists(SaveName)) {
-            cat(SaveName  %<>%  "does not exist, attempting to create it...", fill = TRUE)
-            dir.create(SaveName, recursive=TRUE)
-            if (file.exists(SaveName)) 
-                cat(SaveName  %<>%  " created!", fill = TRUE)
-            else stop("error creating "  %<>%  SaveName)
+        WSPathName<-paste(.UserDirectory, d, name, sep="/")
+         if (!file.exists(WSPathName)) {
+            dir.create(WSPathName, recursive=TRUE)
+            if (file.exists(WSPathName)) 
+                cat(WSPathName  %<>%  " created!", fill = TRUE)
+            else stop("error creating "  %<>%  WSPathName)
         } 
     }
-    base::assign(".WSID", SaveName, envir = .GlobalEnv)
+    base::assign(".WSID", WSPathName, envir = .GlobalEnv)
+    if (Prefix!="")
+        base::assign(".Prefix", Prefix, envir = .GlobalEnv)
     base::assign(".LastSaved", date(), envir = .GlobalEnv)
-    base::setwd(.WSID)   
-    base::save.image(".Rdata")
+    base::setwd(.WSID)
+    WSName <- paste(Prefix, ".Rdata", sep="")
+    HistoryName <- paste(Prefix, ".RHistory", sep="")
+    ok <- file.create(WSName, showWarnings=FALSE)
+    if (!ok) {
+      warning("invalid, prefix =", prefix)
+      cat("reset to default, NULL",fill=TRUE)
+      WSName <- ".Rdata"  #setting to defaults
+      HistoryName <- ".RHistory"
+    }  
+    base::save.image(WSName)
     if (!silentQ) {
         cat("working directory: "  %<>% .WSID,  fill=TRUE)
-        cat("saved: "  %<>% .WSID  %<>% "/.Rdata", fill = TRUE)
+        cat("saved: "  %<>% .WSID  %<>% "/" %<>% WSName, fill = TRUE)
         }
-    if (historyQ) {
-        wsRHistory <- SaveName  %<>%  "/.RHistory"
+    if (historyQ&&interactive()) {
+        wsRHistory <- WSPathName  %<>%  "/" %<>% HistoryName
         utils::savehistory(wsRHistory)
         if (!silentQ) 
             cat("saved: "  %<>% wsRHistory, fill = TRUE)
     }
      if (!silentQ) 
         cat(.LastSaved, fill = TRUE)
+     if (q) q("no")
 }
 

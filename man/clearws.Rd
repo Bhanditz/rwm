@@ -4,9 +4,9 @@
 \title{Clear workspace}
 \description{
 Removes all functions and datasets. 
-Also removes `.WSID` but not `.UserDirectory`, `.UserDate` and
+Also removes \code{.WSID} but not \code{.UserDirectory}, \code{.UserDate} and
 other hidden variables.
-The working directory is set to `.UserDirectory`.
+The working directory is reset to \code{.UserDirectory}.
 }
 \usage{
 clearws(silentQ=FALSE)
@@ -21,23 +21,15 @@ Using this function is similar to quitting R and starting
 R again with a fresh workspace except that the
 R command history is kept.
 All non-hidden R objects are deleted as well
-as the hidden variables `.WSID`, `.LastSaved` and `.Describe`
+as the hidden variables \code{.WSID}, \code{.LastSaved} and  \code{.Describe}
 if they exist in the current workspace.
 }
+
 \value{
 None
 }
 
-\references{ 
-McLeod, A.I. (2008). R Workspace Management: With R Package.
-}
-
 \author{A.I. McLeod }
-
-\section{Warning}{
-This function can not be called by another function.
-}
-
 
 \seealso{ 
 \code{\link{loadws}},
@@ -45,12 +37,20 @@ This function can not be called by another function.
  }
 
 \examples{
-\dontrun{
-loadws(ptest)
-ls(all.names=TRUE)
+#INITIALIZATION
+#Normally .UserDirectory and .UserDate are defined previously. 
+#Usually a more convenient directory is used but for illustration
+#using a script which will run in interactive or batch mode on any computer:
+.UserDirectory <- tempdir()
+.UserDate <- "2008"
+dir.create(paste(.UserDirectory, .UserDate, sep="/"))
+
+#Fit model to airquality data, save and clear
+NYO3.fit <- lm(Ozone~Solar.R + Wind + Temp, data=airquality)
+NYO3.fit 
+savews("NYO3")
 clearws()
 ls(all.names=TRUE)
-	}
 }
 
 \keyword{environment}
