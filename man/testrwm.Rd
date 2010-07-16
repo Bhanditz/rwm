@@ -27,13 +27,27 @@ Returns TRUE or FALSE according if the setup is valid
 \note{ This function is used by most of the other functions to validate
 the setup before attempting to run.
 The global variable \code{.UserDirectory} may be set manually as in the examples
-below and it can be set by running \command{initrwm()}. 
+rwm/
+rwm/g
+rwm/g
+rwm/g
+rwm/g
+rwm/g
+rwm/g
+below and it can be set by running \command{rwmInit()}. 
 }
 
 \seealso{
 \code{\link{loadws}},
 \code{\link{savews}},
-\code{\link{initrwm}}
+rwm/
+rwm/g
+rwm/g
+rwm/g
+rwm/g
+rwm/g
+rwm/g
+\code{\link{rwmInit}}
 }
 
 \examples{

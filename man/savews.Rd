@@ -15,8 +15,8 @@ Save R workspace and history.
   \item{silentQ}{ TRUE, no message}
   \item{historyQ}{ TRUE, save R history }
   \item{q}{ quit R, FALSE - no; TRUE - yes quit  }
-  \item{prefix}{Default workspace filename is \sQuote{.Rdata} but if \code{prefix} is a valid
-  	non-null character string, it will be prepended to \dQuote{.Rdata}. 
+  \item{prefix}{Default workspace filename is \sQuote{.Rdata} but 
+  \code{prefix} is prepended to \dQuote{.Rdata} provided it is a valid filename. 
 	If the argument \code{prefix} is not supplied and if \code{.Prefix} does not exist, 
 	\code{prefix} is set to \code{NULL}.  }
 }
@@ -57,7 +57,7 @@ in the same file it was in when loaded. }
 \code{\link{load}},
 \code{\link{savews}},
 \code{\link{clearws}},
-\code{\link{initrwm}}
+\code{\link{rwmInit}}
 }
 
 \examples{

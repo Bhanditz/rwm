@@ -1,0 +1,20 @@
+.onLoad <-
+function (libname, pkgname) 
+{
+    if (testrwm()) {
+        setwd(.UserDirectory)
+        cat("Current directory:", .UserDirectory, "\n")
+    }
+    else cat("Please run `rwmInit()`.\n") 
+}
+
+export(
+## rwm functions
+  "loadws",
+  "savews",
+  "attachws",
+  "clearws",
+  "cws",
+  "rwmInit",
+  "testrwm"
+)

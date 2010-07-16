@@ -21,7 +21,7 @@ In this case, the current directory is set to \code{.UserDirectory}\code{<>}\cod
 
 An error message is given if \code{.UserDirectory} is not defined.
 The \code{.UserDirectory} may be set manually using a normal
-R assignment or by the function initrwm().
+R assignment or by the function irwm().
 
 If the workspace contains a character vector \code{.Describe}, this is also
 displayed when the workspace is loaded. 
@@ -61,7 +61,7 @@ a warning will be given and the object will be deleted.
 \code{\link{load}},
 \code{\link{savews}},
 \code{\link{clearws}},
-\code{\link{initrwm}}
+\code{\link{rwmInit}}
 }
 
 \examples{

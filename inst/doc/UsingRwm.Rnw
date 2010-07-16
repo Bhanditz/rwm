@@ -1,0 +1,998 @@
+%VNB: for the last time!!!
+%Please edit the Rnw file. Do not edit *.tex file!!!
+%Use *.tex file spelling check!
+
+\documentclass[article,nojss]{jss}
+\usepackage{amsmath}
+\def\command#1{{\it #1}}
+\newfont{\tit}{cmss10 scaled\magstep1}
+\def\ti#1{{\tit #1}}
+
+\author{A. I. McLeod\\University of Western Ontario }
+\Plainauthor{A. I. McLeod}
+
+\title{Using \pkg{rwm}}
+\Plaintitle{Using rwm}
+
+\Keywords{Decision support systems, ephemeral computing, workspace, teaching}
+\Plainkeywords{Decision support systems, ephemeral computing, 
+libraries, teaching, workspaces}
+
+\Abstract{
+The \pkg{rwm} package provides an expedient approach to managing
+a large number of workspaces across multiple operating systems.
+In some situations, particularly with ephemeral projects,
+it provides an expedient alternative to using \proglang{R} libraries.
+}
+
+\Address{
+  A.I. McLeod\\
+  University of Western Ontario\\
+  E-mail: \email{aimcleod@uwo.ca}
+}
+
+\begin{document}
+
+\SweaveOpts{engine=R,eps=FALSE}
+%\VignetteIndexEntry{Using rwm}
+%\VignetteKeywords{Decision support systems, ephemeral computing projects, libraries and packages, teaching and homework, workspaces}
+%\VignettePackage{rwm}
+
+<<preliminaries,echo=FALSE,results=hide>>=
+online <- FALSE ## if set to FALSE the local copy of MSFT.rda
+                ## is used instead of get.hist.quote()
+options(prompt = "R> ")
+@
+
+\section[Purpose]{Purpose} 
+\label{sec:intro}
+
+The \pkg{rmw} package is useful to \proglang{R} user's who 
+has a large number of workspaces
+and/or works on ephemeral projects such as decision support, teaching, home work, etc. 
+In many cases workspaces provide a more expedient and convenient way of sharing functions
+and data than using \proglang{R} packages.
+Simple documentation of the objects in the workspace is provided
+by using a variable {\tt .Describe} that is displayed when the workspace is
+loaded or attached to. 
+
+This approach was loosely inspired by the way workspaces are handled in
+\proglang{APL} \citep{Grenander82, Helzer1989}.
+The table below lists the functions included in
+\pkg{rwm} and their \proglang{APL} equivalents. 
+
+\vspace{0.1in}
+\begin{tabular}{lll}
+\ti{rwm Function} 		& \ti{Description}        &  \ti{APL Command}       \cr
+\code{loadws}			& load workspace          &  \command{)LOAD}        \cr
+\code{savews}     		& save workspace          &  \command{)SAVE}        \cr
+\code{attachws}     	& attach workspace        &  \command{)LIB}         \cr
+\code{cws}				& save workspace and quit &  \command{)CONTINUE}       \cr
+\code{clearws}			& clear workspace         &  \command{)CLEAR}          \cr
+\end{tabular}
+\vspace{0.1in}
+
+\proglang{APL} provides the command \code{)WSID} that can be used
+to find the name of the workspace. 
+In \pkg{rwm}, the global variable \code{.WSID} provides the same functionality.
+
+The functions provided in \pkg{rwm} may be used in interactive or batch mode with
+\proglang{R} and across all operating systems.
+In this way \proglang{R} scripts,  accessing a variety of workspaces,
+may be made portable across all computer environments.
+
+\citet{McLeodRJournal} provides an overview of the \pkg{rwm} package with
+some other examples of its use.
+
+\section[Setup For rwm]{Setup For rwm} 
+\label{sec:setup}
+
+You should always start \proglang{R} using the same workspace
+when using \pkg{rwm} since it needs to have the variables
+{\tt .UserDirectory} and {\tt .UserDate} defined.
+The \pkg{rwm} package organizes your workspaces into subdirectories
+formed using {\tt .UserDirectory}.
+The variable {\tt .UserDate} specfies the subdirectories 
+below {\tt .UserDirectory} that contains current projects.
+For example on my Windows machine,
+{\tt .UserDirectory} and {\tt .UserDate} are set to
+{\tt d:/r} and {2010} respectively.
+When I start \proglang{R} by clicking on the icon created when
+\proglang{R} was installed the workspace,
+{\tt C:/Users/Ian/Documents/.Rdata}, is loaded.
+This workspace contains variables {\tt .UserDirectory} and
+{\tt .UserDate} that are described below.
+
+Before using the package \pkg{rwm} an initial setup is needed
+to specify the location of your \proglang{R} projects.
+This setup is easily done after loading the package \pkg{rwm} and running
+the function \code{irwm}.
+Then use the \proglang{R}
+function \code{save.image} to save your starting workspace and
+then \proglang{R}.
+After restarting \proglang{R}, you are ready to use \pkg{rmw}.
+
+Alternatively, you may simply do the initialization manually
+as discussed below of Windows, Mac and linux.
+More general ways of working with \pkg{rwm} are sometimes
+useful and are discussed in section \ref{sec:Workingdirectories}.
+
+\subsection[Illustrative Setup For Windows]{Illustrative Setup For Windows}
+\label{sec:windows}
+
+Start \proglang{R} in the usual way by clicking on the icon 
+on your desktop or quick launch toolbar.
+In this script, I choose the directory for my \proglang{R}
+projects to be {\tt d:/r} and my for my current works {\tt d:/r/2010}.
+You should make any changes in the script below to reflect
+your preferences.
+
+\begin{Schunk}
+\begin{Sinput}
+.UserDirectory <- "d:/r"
+.UserDate <- 2010
+save.image()
+\end{Sinput}
+\end{Schunk}
+
+\subsection[Illustrative Setup For Mac]{Illustrative Setup For Mac}
+\label{sec:mac}
+
+Start \proglang{R} in the usual way by clicking on the icon 
+in your applications folder or quickstart bar. 
+In this script, I choose the directory for my \proglang{R}
+projects to be {\tt /Volumes/MacAIM/R} 
+and my for my current projects {\tt /Volumes/MacAIM/R/2010}.
+You should make any changes in the script below to reflect
+your preferences.
+
+\begin{Schunk}
+\begin{Sinput}
+.UserDirectory <- "/Volumes/MacAIM/R"
+.UserDate <-  2010
+save.image()
+\end{Sinput}
+\end{Schunk}
+
+\subsection[Illustrative Setup For Linux]{Illustrative Setup For Linux}
+\label{sec:linux}
+
+Login to your account and start \proglang{R} in the usual way.
+In this script, I choose the directory for my \proglang{R}
+projects to be {\tt users/faculty/aim/R} and my for my current works 
+{\tt users/faculty/aim/R/2010}.
+You should make any changes in the script below to reflect
+your preferences.
+
+\begin{Schunk}
+\begin{Sinput}
+.UserDirectory <- "users/faculty/aim/R"
+.UserDate <- 2010
+save.image()
+\end{Sinput}
+\end{Schunk}
+
+\subsection[Generic Setup]{Generic Setup}
+\label{sec:generic}
+
+For some purposes we need a directory assignment that is completely
+machine and OS independent.
+This is used for example in the {\tt Rd} files in this package.
+The following initializes the setup variables for \pkg{rwm} and
+then saves the workspace.
+
+\begin{Schunk}
+\begin{Sinput}
+R> .UserDirectory <- tempdir()
+R> .UserDate <- "2010"
+R> library(rwm)
+\end{Sinput}
+\begin{Soutput}
+Current directory: C:/Users/Ian/AppData/Local/Temp\Rtmp2oCWjh
+\end{Soutput}
+\begin{Sinput}
+R> save.image("GenericExample")
+\end{Sinput}
+\end{Schunk}
+
+\section[Using `loadws' And `savews']{Using `loadws' And `savews'} 
+\label{sec:loadsave}
+
+\subsection[Starting A New Project]{Starting A New Project}
+The easiest way to start a new project is to use \code{savews} as in
+the following example.
+
+\begin{Schunk}
+\begin{Sinput}
+> library(rwm)
+\end{Sinput}
+\begin{Soutput}
+Current directory: d:/r
+\end{Soutput}
+\begin{Sinput}
+R>  savews("diabetes/Table1")
+\end{Sinput}
+\begin{Soutput}
+d:/r/2010/diabetes/Table1 created!
+working directory: d:/r/2010/diabetes/Table1
+saved: d:/r/2010/diabetes/Table1/.Rdata
+saved: d:/r/2010/diabetes/Table1/.RHistory
+Fri Jul 02 17:54:20 2010
+\end{Soutput}
+\end{Schunk}
+
+As indicated this creates a workspace with full pathname
+{\tt d:/r/2010/diabetes/Table1/.Rdata}.
+The working directory has been set to
+{\tt d:/r/2010/diabetes/Table1}.
+In addition, the \proglang{R} history to this point is saved.
+Finally the workpace variable \code{.WSID} now defined.
+
+\begin{Schunk}
+\begin{Sinput}
+> .WSID
+\end{Sinput}
+\begin{Soutput}
+[1] "d:/r/2010/diabetes/Table1"
+\end{Soutput}
+\end{Schunk}
+
+\subsection[Recursive Directory Creation]{Recursive Directory Creation}
+\label{subsec:Recursive}
+
+In the above example, none of the subdirectories apart from
+{\tt d:/r} need exist since the \code{savews} will create them
+as needed.
+This feature is illustrated in the following example:
+
+\begin{Schunk}
+\begin{Sinput}
+R > savews("FirstContact", d=2063)
+\end{Sinput}
+\begin{Soutput}
+d:/r/2063 created!
+d:/r/2063/FirstContact created!
+working directory: d:/r/2064/FirstContact
+saved: d:/r/2063/FirstContact/.Rdata
+saved: d:/r/2063/FirstContact/.RHistory
+Thu Jul 08 17:06:55 2010
+\end{Soutput}
+\end{Schunk}
+
+When a directory is created recursively a message is given as in,
+
+\begin{Schunk}
+\begin{Soutput}
+d:/r/2063 created!
+d:/r/2063/FirstContact created!
+\end{Soutput}
+\end{Schunk}
+
+\subsection[Using The `prefix' Argument]{Using The `prefix' Argument}
+
+The default filename for a workspace is {\tt .Rdata} but using
+the {\tt prefix} argument available in \code{loadws}, \code{savews}
+and {\tt attachws} allows workspaces to have names such as
+{\tt prime.Rdata}, {\tt 459.Rdata}, {\tt diabetes.Rdata}, etc.
+In this way many workspaces can be stored in a single subdirectory.
+The prefix used is stored in a global variable {\tt .Prefix}.
+When the default workspace filename is used, {\tt .Prefix} is undefined
+or set to the empty character.
+
+\begin{Schunk}
+\begin{Sinput}
+R > clearws()
+\end{Sinput}
+\begin{Soutput}
+Workspace cleared.
+Working directory: d:/r
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R > lmLongley<-lm(Employed~., data=longley)
+R > savews("459", prefix="longley")
+\end{Sinput}
+\begin{Soutput}
+d:/r/2010/459 created!
+working directory: d:/r/2010/459
+saved: d:/r/2010/459/longley.Rdata
+saved: d:/r/2010/459/longley.RHistory
+Mon Jul 12 17:49:28 2010
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R > .WSID
+\end{Sinput}
+\begin{Soutput}
+[1] "d:/r/2010/459"
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R > .Prefix
+\end{Sinput}
+\begin{Soutput}
+[1] "longley"
+\end{Soutput}
+\end{Schunk}
+
+\subsection[Full Pathnames]{Full Pathnames}
+
+The primary purpose of \code{loadws} is to load a workspace
+that has previously been created using \code{savews}.
+But \code{loadws}, \code{savews} and \code{attachws}
+may also be used to load other workspaces
+as described in section \ref{sec:Usingfullpathnames}.
+
+\section[Using attachws]{Using attachws} 
+\label{sec:attach}
+
+\subsection[A Teaching Example]{A Teaching Example}
+\label{subsec:Teaching}
+
+For a simple example using \code{attachws} we create a
+20-by-5 data matrix to be used by students in Stats 459.
+The workspace is saved as {\tt Stats459/XMatrix}.
+We also make use of the {\tt .Describe}-variable capability.
+After saving and clearing the workspace, it is attached to.
+In this example the R Workspace is used like a library or package.
+
+\begin{Schunk}
+\begin{Sinput}
+R > library(rwm)
+\end{Sinput}
+\begin{Soutput}
+Current directory: d:/r
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R >  savews("Stats459/XMatrix")
+\end{Sinput}
+\begin{Soutput}
+d:/r/2010/Stats459/XMatrix created!
+working directory: d:/r/2010/Stats459/XMatrix
+saved: d:/r/2010/Stats459/XMatrix/.Rdata
+saved: d:/r/2010/Stats459/XMatrix/.RHistory
+Mon Jul 12 16:05:42 2010
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R > X<-matrix(rnorm(100), ncol=5)
+R > .Describe<-"X is a 20-by-5 data matrix of NID(0,1) data"
+R > savews()
+\end{Sinput}
+\begin{Soutput}
+working directory: d:/r/2010/Stats459/XMatrix
+saved: d:/r/2010/Stats459/XMatrix/.Rdata
+saved: d:/r/2010/Stats459/XMatrix/.RHistory
+Mon Jul 12 16:07:12 2010
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R > clearws()
+\end{Sinput}
+\begin{Soutput}
+Workspace cleared.
+Working directory: d:/r
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R > attachws("Stats459/Xmatrix")
+\end{Sinput}
+\begin{Soutput}
+attached:  d:/r/2010/Stats459/Xmatrix/.Rdata
+.Describe = X is a 20-by-5 data matrix of NID(0,1) data
+\end{Soutput}
+\end{Schunk}
+
+\subsection[Using The `prefix' Argument with `attachws']{Using The `prefix' Argument with `attachws'}
+\label{subsec:Simulation}
+
+
+After running a long R simulation, we saved the data in the workspace 
+{\tt 4.Rdata} on a unix computer.
+The prefix 4 signified that we use $10^4$ simulations.
+We moved this file to our PC system in the subdirectory {\tt d:/r/2010/AICa/Table1},
+where we plan to carry out the statistical analysis and create the final tables
+for our report.
+We attach to this workspace
+
+\begin{Schunk}
+\begin{Sinput}
+R >  attachws("AICa/Table1", prefix=4)
+\end{Sinput}
+\begin{Soutput}
+attached:  d:/r/2010/AICa/Table1/4.Rdata
+\end{Soutput}
+\end{Schunk}
+
+
+\subsection[Using `LibLocation' With `attachws']{Using `LibLocation' With `attachws'}
+\label{subsec:UsingLibLocation}
+
+I also have many projects with \LaTeX and 
+I organize these projects in a similar fashion
+to the R projects. 
+So \LaTeX projects are in subdirectories of
+{\tt e:/tex/2009}, {\tt e:/tex/2010}, etc.
+In some cases it is expedient to mix the project files. 
+For example, if we are preparing a report, it may be convenient to put the necessary R files
+for producing tables and figures in a subdirectory of the report main directory.
+
+For this reason, we may have preferred to copy {\tt 4.Rdata} to a 
+subdirectory of the main directory where
+our report is being prepared.
+In this case the pathname for our subdirectory 
+could be {\tt e:/tex/2010/AIC/Tables/Table1}
+and we can attach to this directory with
+
+\begin{Schunk}
+\begin{Sinput}
+R>  attachws("AIC/Tables/Table1", prefix="4",LibLocation="e:/tex")
+\end{Sinput}
+\begin{Soutput}
+attached:  e:/tex/2010/AIC/Tables/Table1/4.Rdata
+\end{Soutput}
+\end{Schunk}
+
+\section[Using clearws]{Using `clearws'}
+\label{sec:UsingCLEARWS}
+
+The function \code{clearws} removes all objects except \code{.UserDirectory} and
+\code{.UserDate} and changes the current working directory to the {\tt IRWMD}.
+This is illustrated in the Windows example below,
+
+\begin{Schunk}
+\begin{Sinput}
+R > clearws()
+\end{Sinput}
+\begin{Soutput}
+Workspace cleared.
+Working directory: d:/r
+\end{Soutput}
+\end{Schunk}
+
+Note that since \code{.WSID} is undefined in a clear workspace,
+some \pkg{rwm} functions won't work as illustrated with
+the continue function \code{cws} below:
+
+\begin{Schunk}
+\begin{Sinput}
+R > cws()
+\end{Sinput}
+\begin{Soutput}
+Error in savews(silentQ = silentQ) : object '.WSID' not found
+\end{Soutput}
+\end{Schunk}
+
+\section[Using cws]{Using `cws'}
+\label{sec:UsingCWS}
+
+The \code{cws} simply saves the workspace and quits.
+It is assumed that the workspace has been previously saved
+using \code{savews} so that \code{.WSID} exists in the current workspace.
+
+\begin{Schunk}
+\begin{Sinput}
+R > cws()
+\end{Sinput}
+\end{Schunk}
+
+\section[Working other directories]{Working other directories}
+\label{sec:Workingdirectories}
+
+\subsection[Initial R Workspace]{Initial R Workspace}
+\label{sec:Initialrwm}
+
+In some case the \proglang{R} user may use subdirectories of the IWD for
+their \proglang{R} projects. 
+But in many cases, it may be preferable to use some other directory.
+This may be necessary in multi-user environments or if the IWD
+is on a virtual drive.
+
+For example, on my Windows PC, I used {\tt d:/r} for all my \proglang{R}
+projects and all my current work for this year is in subdirectories
+of {\tt d:/r/2010}.
+This subdirectory contains many further subdirectories which may be 
+nested to any level.
+Each subdirectory may contain one or more \proglang{R} workspaces.
+The default filename for each workspace is {\tt .Rdata} but
+prefixes such {\tt tableA.Rdata} or {\tt 4.Rdata} may also
+be used.
+
+The {\it installation directory} is where \proglang{R} and its component directories:
+\code{bin}, \code{library}, etc. are located.
+The location of this directory is often referred to as \code{R_HOME} and this
+location is typically stored by the \proglang{OS} in an environmental variable.
+When \proglang{R} is running the location \code{R_HOME} may be obtained
+using the function \code{R.home}:
+
+\begin{Schunk}
+\begin{Sinput}
+R.home()
+\end{Sinput}
+\end{Schunk}
+
+When R is started using the executable program located in the \code{bin} subdirectory
+of \code{R_HOME}, the default initial working directory (IWD) is used.
+The location of this default IWD may be determined using the \proglang{R}
+function \code{getwd}.
+
+\vspace{0.1in}
+\begin{tabular}{ll}
+\ti{OS}            & \ti{Default IWD} \cr
+Windows Vista       &C:$\backslash$Users$\backslash$Ian$\backslash$R    \cr
+Mac OS X            &/users/aim/R                                       \cr
+linux               &/users/faculty/aim/R                               \cr
+\end{tabular}
+\vspace{0.1in}
+
+When the \proglang{R} workspace is saved using the function \code{save.image},
+a workspace file with extension \code{.Rdata} is created in the 
+current working directory,
+
+\begin{Schunk}
+\begin{Sinput}
+save.image()
+\end{Sinput}
+\end{Schunk}
+
+\subsection[Inital rwm Workspace]{Initial rwm Workspace}
+
+When the package \pkg{rwm} is loaded using the \proglang{R} command
+\code{library(rwm)}, a script \code{.onLoad} is run
+which causes the current working directory to be set to the
+directory specified by \code{.UserDirectory}.
+This is illustrated in the brief example below:
+
+\begin{Schunk}
+\begin{Sinput}
+R > library(rwm)
+\end{Sinput}
+\begin{Soutput}
+Current directory: d:/r
+\end{Soutput}
+\end{Schunk}
+
+This workspace is usually nearly empty,
+
+\begin{Schunk}
+\begin{Sinput}
+R > ls(all.names=TRUE)
+\end{Sinput}
+\begin{Soutput}
+[1] ".gW"                 ".Random.seed"        ".UserDate"          
+[4] ".UserDirectory"      "SelectUserDirectory"
+\end{Soutput}
+\end{Schunk}
+
+As in APL, I feel it is best to avoid confusion and leave
+\code{.WSID} undefined.
+It is defined when \code{loadws(...)} or \code{savews(...)}
+is used, where \code{...} indicates that a non-null argument
+is given.
+
+\subsection[Working With Multiple IWDs]{Working With Multiple IWDs} 
+\label{sec:MultipleDirectories}
+
+Sometimes when working with \proglang{Mathematica} or \LaTeX, I
+find it convenient to save \proglang{R} workspaces along with
+these project files.
+This could be done by using the base \proglang{R} function
+\command{save.image} but it is easy to make an error in the
+pathname.
+So I find it convenient to use the function \command{SelectUserDirectory}
+to set up a different initial workspace.
+Of course, the user will likely need to modify the locations to suit
+their needs.
+
+\begin{Schunk}
+\begin{Sinput}
+`SelectUserDirectory` <-
+function(){
+	cat("Select from the following:", fill=T)
+	cat("1. d:/r", fill=T)
+	cat("2. d:/math", fill=T)
+	cat("3. e:/tex", fill=T)
+	cat("4. R home", fill=T)
+	ans <- as.numeric(readline("Enter your choice 1-4: \n >>:"))
+	if (! (ans %in% 1:4)) ans<-4 #default, always valid
+	.UserDirectory <<- switch(ans, "d:/r", "d:/math", "e:/tex", R.home())
+	setwd(.UserDirectory)
+	cat(paste("Current directory:", .UserDirectory), fill = TRUE)
+}
+\end{Sinput}
+\end{Schunk}
+
+Here I illustrate how this function works on one of my systems,
+
+\begin{Schunk}
+\begin{Sinput}
+R >  SelectUserDirectory()
+\end{Sinput}
+\begin{Soutput}
+Select from the following:
+1. d:/r
+2. d:/math
+3. e:/tex
+4. R home
+Enter your choice 1-4: 
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+>>:3
+\end{Sinput}
+\begin{Soutput}
+Current directory: e:/tex
+\end{Soutput}
+\end{Schunk}
+ 
+Workspaces can be loaded or save using {\tt e:/tex} as
+the new initial rwm directory, as in the following example:
+
+\begin{Schunk}
+\begin{Sinput}
+R > loadws("AIC/Tables")
+\end{Sinput}
+\begin{Soutput}
+working directory: e:/tex/2010/AIC/Tables
+loaded: e:/tex/2010/AIC/Tables/.Rdata
+loaded: e:/tex/2010/AIC/Tables/.RHistory
+last saved: Thu Jul 08 15:18:01 2010
+\end{Soutput}
+\end{Schunk}
+
+\subsection[Using `attachws' With `LibLocation']{Using `attachws' With `LibLocation'}
+\label{sec:UsingattachwsLibLocation}
+
+\begin{Schunk}
+\begin{Sinput}
+R > library(rwm)
+\end{Sinput}
+\begin{Soutput}
+Current directory: d:/r
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R >  attachws("AIC/Tables", LibLocation="e:/tex")
+\end{Sinput}
+\begin{Soutput}
+attached:  e:/tex/2010/AIC/Tables/.Rdata
+\end{Soutput}
+\end{Schunk}
+
+An alternate year can be specified,
+
+\begin{Schunk}
+\begin{Sinput}
+R >  attachws("bicq/SAHeart", LibLocation="e:/tex", d=2009)
+\end{Sinput}
+\begin{Soutput}
+attached:  e:/tex/2010/AIC/Tables/.Rdata
+\end{Soutput}
+\end{Schunk}
+
+In the above example, we could also load the workspace by
+specifying the full pathname,
+
+\begin{Schunk}
+\begin{Sinput}
+R > attachws("e:/tex/bicq/SAHeart/.Rdata")
+\end{Sinput}
+\begin{Soutput}
+attached:  e:/tex/2009/bicq/SAHeart/.Rdata
+\end{Soutput}
+\end{Schunk}
+
+More examples of working with full pathnames are shown in the
+next section.
+
+\subsection[Using Full Pathnames]{Using Full Pathnames}
+\label{sec:Usingfullpathnames}
+
+The functions \code{loadws}, and \code{attach}
+may use the  argument \code{name} to directly specify a full
+pathname for the workspace.
+
+\subsubsection{Example Using `loadws'}
+
+In this example we load a workspace by using the full pathname {\tt e:/temp/.Rdata}
+Then we use \code{attachws} to add a workspace with some data to our R search path.
+Notice that the current working directory is {\tt e:/temp/} and the save workspace
+function works correctly even in this non-standard location.
+
+\begin{Schunk}
+\begin{Sinput}
+R>  loadws("e:/temp/.Rdata")
+\end{Sinput}
+\begin{Soutput}
+working directory: e:/temp
+loaded: e:/temp/.Rdata
+loaded: e:/temp/.RHistory
+last saved: Tue Jul 06 18:12:19 2010
+\end{Soutput}
+\begin{Sinput}
+attachws("AICa/Table1", prefix=4)
+\end{Sinput}
+\begin{Soutput}
+attached:  d:/r/2010/AICa/Table1/4.Rdata
+\end{Soutput}
+\begin{Sinput}
+R > search()
+\end{Sinput}
+\begin{Soutput}
+ [1] ".GlobalEnv"                         "file:d:/r/2010/AICa/Table1/4.Rdata"
+ [3] "package:RWinEdt"                    "package:rwm"                       
+ [5] "package:stats"                      "package:graphics"                  
+ [7] "package:grDevices"                  "package:utils"                     
+ [9] "package:datasets"                   "package:methods"                   
+[11] "Autoloads"                          "package:base" 
+\end{Soutput}
+\begin{Sinput}
+R > savews()
+\end{Sinput}
+\begin{Soutput}
+working directory: e:/temp
+saved: e:/temp/.Rdata
+saved: e:/temp/.RHistory
+Wed Jul 07 12:13:17 2010
+\end{Soutput}
+\begin{Sinput}
+R > getwd()
+\end{Sinput}
+\begin{Soutput}
+[1] "e:/temp"
+\end{Soutput}
+
+\begin{Sinput}
+R >  .WSID
+\end{Sinput}
+\begin{Soutput}
+[1] "e:/temp"
+\end{Soutput}
+\end{Schunk}
+
+\subsubsection{Full Pathnames Using `save.image'}
+
+The full-pathname capability is not directly provided with \code{savews}.
+Instead the following approach is suggested.
+To save a workspace in another location simply use the built-in
+\proglang{R} function \code{save.image} and then load it using
+\code{loadws} as in the following example,
+
+\begin{Schunk}
+\begin{Sinput}
+R > library(rwm)
+\end{Sinput}
+\begin{Soutput}
+Current directory: d:/r
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R > save.image("C:\\Temp\\.RData")
+R > loadws("c:/temp/.Rdata")
+\end{Sinput}
+\begin{Soutput}
+working directory: c:/temp
+loaded: c:/temp/.Rdata
+\end{Soutput}
+\end{Schunk}
+
+Using \code{loadws} defines \code{.WSID},
+
+\begin{Schunk}
+\begin{Sinput}
+R > .WSID
+\end{Sinput}
+\begin{Soutput}
+[1] "c:/temp"
+\end{Soutput}
+\end{Schunk}
+
+Alternatively \code{attachws} could be used in this example
+if it was desired to emulate an \proglang{R} workspace.
+
+\subsubsection{Graceful Exit}
+
+The functions \code{loadws}, \code{savews} and \code{attachws} 
+stop gracefully if the
+argument \code{name} is not valid.
+In the first example below, {\tt d:/r/2010/1024} is a valid pathname
+but the full pathname for the workspace is needed.
+ 
+\begin{Schunk}
+\begin{Sinput}
+R > loadws("d:/r/2010/1024")
+\end{Sinput}
+\begin{Soutput}
+Error in loadws("d:/r/2010/1024") : 
+  d:/r/2010/1024: Workspace is not valid or does not exist.
+\end{Soutput}
+\end{Schunk}
+
+Since {\tt d:/r/2010/1024/.Rdata} is a valid workspace it loads fine
+using the full pathname. 
+
+\begin{Schunk}
+\begin{Sinput}
+R > loadws("d:/r/2010/1024/.Rdata")
+\end{Sinput}
+\begin{Soutput}
+working directory: d:/r/2010/1024
+loaded: d:/r/2010/1024/.Rdata
+loaded: d:/r/2010/1024/.RHistory
+last saved: Wed Jan 06 11:19:29 2010
+\end{Soutput}
+\end{Schunk}
+
+In the example below,  {\tt d:/r/2010/9999} does not exist.
+So the function \code{loadws} tries to interpret it using the
+default directory structure and it fails with a slightly 
+less direct message.
+
+\begin{Schunk}
+\begin{Sinput}
+R > loadws("d:/r/2010/9999")
+\end{Sinput}
+\begin{Soutput}
+ Error in loadws("d:/r/2010/9999") : 
+  d:/r/2010/d:/r/2010/9999 does not exist.
+\end{Soutput}
+\end{Schunk}
+
+\section[Namespace]{Namespace}
+\label{sec:Namespace}
+
+The \pkg{rwm} package using the namespace mechanism to ensure
+reliability and efficiency \citep[\S 4.5]{Chambers2008}.
+When \pkg{rmw} is attached using the \code{library} command,
+the \code{.onLoad} function shown below is run.
+
+
+\begin{Schunk}
+\begin{Sinput}
+R > .onLoad 
+\end{Sinput}
+\begin{Soutput}
+function (libname, pkgname) 
+{
+    if (testrwm()) {
+        setwd(.UserDirectory)
+        cat(paste("Current directory:", .UserDirectory), fill = TRUE)
+    }
+    else cat("Please run `rwmInit()`.", 
+        fill = TRUE)
+}
+\end{Soutput}
+\end{Schunk}
+
+\section[Maintenance Issues]{Maintenance Issues}
+\label{sec:MaintenanceIssues}
+
+Ever year you will need to add a new directory and update
+the variable {\tt .UserDate}.
+
+\section[FAQ]{FAQ}
+\label{sec:FAQ}
+
+In this section I will attempt to address difficulties that may be encountered
+using \pkg{rwm}.
+
+\subsection[Starting R by clicking on the workspace]
+{Starting R by clicking on the workspace}
+\label{subsec:startingR}
+
+A common way of starting \proglang{R} in a Gui environment is to click
+on the workspace file that is located in the directory containing
+the current project files.
+If this workspace was saved using \code{savews}, there is no problem.
+Otherwise you will need to define the variables {\tt .UserDirectory}
+and {\tt .UserDate}.
+
+
+\subsection[Multiple workspaces in one directory]
+{Multiple workspaces in one directory}
+\label{subsec:MultipleWorkspaces}
+
+The usual default workspace is {\tt .Rdata} which is usually
+treated as a hidden or system file.
+But other valid workspaces may be obtained by prepending
+a valid filename.
+In the example below we save three workspaces in the same
+directory,
+
+\begin{Schunk}
+\begin{Sinput}
+R > savews("2063/FirstContact")
+\end{Sinput}
+\begin{Soutput}
+d:/r/2010/2063/FirstContact created!
+working directory: d:/r/2010/2063/FirstContact
+saved: d:/r/2010/2063/FirstContact/.Rdata
+saved: d:/r/2010/2063/FirstContact/.RHistory
+Fri Jul 09 18:44:36 2010
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R > savews("2063/FirstContact", prefix="Borg") 
+\end{Sinput}
+\begin{Soutput}
+working directory: d:/r/2010/2063/FirstContact
+saved: d:/r/2010/2063/FirstContact/Borg.Rdata
+saved: d:/r/2010/2063/FirstContact/Borg.RHistory
+Fri Jul 09 18:44:56 2010
+\end{Soutput}
+\end{Schunk}
+
+\begin{Schunk}
+\begin{Sinput}
+R >  savews("2063/FirstContact", prefix=15)
+\end{Sinput}
+\begin{Soutput}
+working directory: d:/r/2010/2063/FirstContact
+saved: d:/r/2010/2063/FirstContact/15.Rdata
+saved: d:/r/2010/2063/FirstContact/15.RHistory
+Fri Jul 09 18:48:10 2010
+\end{Soutput}
+\end{Schunk}
+
+Our current working directory is,
+
+\begin{Schunk}
+\begin{Sinput}
+R >  getwd()
+\end{Sinput}
+\begin{Soutput}
+[1] "d:/r/2010/2063/FirstContact"
+\end{Soutput}
+\end{Schunk}
+
+and it contains the files,
+
+\begin{Schunk}
+\begin{Sinput}
+R > list.files(all.files=TRUE)
+\end{Sinput}
+\begin{Soutput}
+[1] "."             ".."            ".Rdata"        ".RHistory"    
+[5] "15.Rdata"      "15.RHistory"   "Borg.Rdata"    "Borg.RHistory"
+\end{Soutput}
+\end{Schunk}
+
+\bibliography{UsingRwm}
+
+\end{document}
+
+just some templates - don't remove!
+\begin{Schunk}
+\begin{Sinput}
+R > 
+\end{Sinput}
+\begin{Soutput}
+
+\end{Soutput}
+\end{Schunk}
+
+
+

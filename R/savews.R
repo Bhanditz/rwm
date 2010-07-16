@@ -10,7 +10,10 @@ function (name = .WSID, d = as.character(.UserDate), silentQ = FALSE,
         Prefix<-""
     else
         Prefix<-prefix
-    #test if 'prefix' is not a character string, eg: myws instead of "myws"
+    integerQ <- function(n) ceiling(n)==floor(n)
+    if (is.numeric(Prefix) && (Prefix>=0) && integerQ(Prefix))
+        Prefix <- as.character(Prefix)        
+#test if 'prefix' is not a character string, eg: myws instead of "myws"
     ans <- base::try(is.character(Prefix),  silent=TRUE) 
     if (!(is.logical(ans) && ans))
         base::stop("Argument, 'prefix', must be a character string!")
@@ -86,4 +89,3 @@ function (name = .WSID, d = as.character(.UserDate), silentQ = FALSE,
         cat(.LastSaved, fill = TRUE)
      if (q) q("no")
 }
-

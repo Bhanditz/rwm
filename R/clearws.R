@@ -18,4 +18,3 @@ function (silentQ = FALSE)
         cat(paste("Working directory:", .UserDirectory), fill = TRUE)
     }
 }
-

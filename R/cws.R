@@ -1,9 +1,9 @@
 cws <-
 function(silentQ=TRUE, q=TRUE){
-savews(silentQ=silentQ)
+rwm::savews(silentQ=silentQ)
 if (q)
-    q("no")
+    base::q("no")
 else
-    clearws()
+    rwm::clearws()
 }
 
