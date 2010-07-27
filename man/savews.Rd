@@ -46,6 +46,10 @@ R assignment or by the function \code{IntializeRWM}.
 
 A warning is given if prefix is invalid. In this case
 the workspace is saved as \dQuote{.Rdata}.
+
+If the argument \code{name} correctly specifies any existing
+directory on the computer, \code{savews}, will still work
+provided of course you have permissions. See vignette example.
 }
 
 \author{A.I. McLeod }

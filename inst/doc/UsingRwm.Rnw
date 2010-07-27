@@ -237,6 +237,30 @@ Finally the workpace variable \code{.WSID} now defined.
 \end{Soutput}
 \end{Schunk}
 
+Here is another example.
+In this case, I want to put a copy of the first four columns
+or the \code{iris} dataframe in the same directory where I have
+a Mathematica project.  
+This file directory already exists and is called
+{\tt d:/math/2010/nnc}.
+
+\begin{Schunk}
+\begin{Sinput}
+ > savews("d:/math/2010/nnc")
+\end{Sinput}
+\begin{Soutput}
+working directory: d:/math/2010/nnc
+saved: d:/math/2010/nnc/.Rdata
+saved: d:/math/2010/nnc/.RHistory
+Tue Jul 27 15:25:52 2010
+\end{Soutput}
+\begin{Sinput}
+> write(t(iris[,1:4]), ncol=4, file="iris.dat") 
+\end{Sinput}
+\end{Schunk}
+
+
+
 \subsection[Recursive Directory Creation]{Recursive Directory Creation}
 \label{subsec:Recursive}
 

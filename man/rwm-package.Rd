@@ -10,8 +10,8 @@
 	\tabular{ll}{
 	Package: \tab rwm\cr
 	Type: \tab Package\cr
-	Version: \tab 1.49\cr
-	Date: \tab 2010-07-16\cr
+	Version: \tab 1.51\cr
+	Date: \tab 2010-07-27\cr
 	License: \tab GLP >= 2\cr
 	}
 
