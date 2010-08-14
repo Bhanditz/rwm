@@ -1,8 +1,8 @@
 Package: rwm
 Type: Package
 Title: R Workspace Management
-Version: 1.51
-Date: 2010-07-27
+Version: 1.52
+Date: 2010-08-14
 Author: A.I. McLeod
 Maintainer: A.I. McLeod <aimcleod@uwo.ca>
 Depends: R (>= 2.0.0)
@@ -11,8 +11,9 @@ Description: R workspace management functions. The principal functions
         convenient method of accessing with R workspaces that is OS
         independent. In simple situations, it may replace the need for
         R packages.
+Classification/ACM: G.4
 License: GPL (>= 2)
 URL: http://www.stats.uwo.ca/faculty/aim
-Packaged: 2010-07-27 19:46:04 UTC; aim
+Packaged: 2010-08-16 16:58:16 UTC; aim
 Repository: CRAN
-Date/Publication: 2010-07-28 07:55:37
+Date/Publication: 2010-08-16 18:43:00
